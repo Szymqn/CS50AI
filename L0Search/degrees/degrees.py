@@ -63,10 +63,10 @@ def main():
     load_data(directory)
     print("Data loaded.")
 
-    source = input("Name: ")
+    source = person_id_for_name(input("Name: "))
     if source is None:
         sys.exit("Person not found.")
-    target = input("Name: ")
+    target = person_id_for_name(input("Name: "))
     if target is None:
         sys.exit("Person not found.")
 
@@ -95,7 +95,7 @@ def shortest_path(source, target):
     num_explored = 0
 
     # Initialize frontier to just the starting position
-    start = Node(state=person_id_for_name(source), parent=None, action=None)
+    start = Node(state=source, parent=None, action=None)
     frontier = StackFrontier()
     frontier.add(start)
 
@@ -113,7 +113,7 @@ def shortest_path(source, target):
         node = frontier.remove()
         num_explored += 1
         # If node is the goal, then we have a solution
-        if node.state == person_id_for_name(target):
+        if node.state == target:
             path = []
             while node.parent is not None:
                 path.append((node.action, node.state))
