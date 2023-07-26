@@ -55,8 +55,7 @@ def load_data(directory):
 def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    # directory = sys.argv[1] if len(sys.argv) == 2 else "large"
-    directory = "small"
+    directory = sys.argv[1] if len(sys.argv) == 2 else "small"
 
     # Load data from files into memory
     print("Loading data...")
@@ -77,10 +76,11 @@ def main():
     else:
         degrees = len(path)
         print(f"{degrees} degrees of separation.")
-        for i, (movie_id, person_id) in enumerate(path):
-            person1 = people[person_id]["name"]
-            person2 = people[path[i + 1][1]]["name"] if i + 1 < len(path) else "Target"
-            movie = movies[movie_id]["title"]
+        path = [(None, source)] + path
+        for i in range(degrees):
+            person1 = people[path[i][1]]["name"]
+            person2 = people[path[i + 1][1]]["name"]
+            movie = movies[path[i + 1][0]]["title"]
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
