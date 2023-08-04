@@ -57,7 +57,21 @@ def transition_model(corpus, page, damping_factor):
     linked to by `page`. With probability `1 - damping_factor`, choose
     a link at random chosen from all pages in the corpus.
     """
-    raise NotImplementedError
+    num_pages_corpus = len(corpus)
+    num_links_page = len(corpus[page]) if page in corpus else 0  # Handle the case when the page has no outgoing links
+
+    link_prob = damping_factor * (1 / num_links_page) if num_links_page > 0 else 0
+    rand_page_prob = (1 - damping_factor) * (1 / num_pages_corpus)
+
+    prob_distribution = {}
+
+    for p in corpus:
+        prob_distribution[p] = rand_page_prob
+
+    for link in corpus[page]:
+        prob_distribution[link] += link_prob
+
+    return prob_distribution
 
 
 def sample_pagerank(corpus, damping_factor, n):
@@ -69,7 +83,23 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    raise NotImplementedError
+    first_page = random.choice(list(corpus.keys()))
+
+    page_rank_values = {page: 0 for page in corpus}
+    page_rank_values[first_page] += 1  # Start from the first page
+
+    for i in range(n):
+        next_page_probs = transition_model(corpus, first_page, damping_factor)
+        next_page = random.choices(list(next_page_probs.keys()), list(next_page_probs.values()))[0]
+        page_rank_values[next_page] += 1
+        first_page = next_page
+
+    # Normalize page rank values to sum up to 1
+    total_visits = sum(page_rank_values.values())
+    for page in page_rank_values:
+        page_rank_values[page] /= total_visits
+
+    return page_rank_values
 
 
 def iterate_pagerank(corpus, damping_factor):
