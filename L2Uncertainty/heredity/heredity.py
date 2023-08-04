@@ -82,7 +82,7 @@ def main():
                 update(probabilities, one_gene, two_genes, have_trait, p)
 
     # Ensure probabilities sum to 1
-    normalize(probabilities)
+    # normalize(probabilities)
 
     # Print results
     for person in people:
@@ -157,6 +157,10 @@ def joint_probability(people, one_gene, two_genes, have_trait):
     return entire_joint_probability
 
 
+def update_trait(num_of_copies, logic_sign, p):
+    return PROBS["trait"][num_of_copies][logic_sign] + p
+
+
 def update(probabilities, one_gene, two_genes, have_trait, p):
     """
     Add to `probabilities` a new joint probability `p`.
@@ -164,7 +168,31 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     Which value for each distribution is updated depends on whether
     the person is in `have_gene` and `have_trait`, respectively.
     """
-    raise NotImplementedError
+    if one_gene:
+        for child in one_gene:
+            probabilities[child]["gene"][1] = PROBS["gene"][1] + p
+            if child in have_trait:
+                probabilities[child]["trait"][True] = update_trait(1, True, p)
+            else:
+                probabilities[child]["trait"][False] = update_trait(1, False, p)
+
+    if two_genes:
+        for child in two_genes:
+            probabilities[child]["gene"][2] = PROBS["gene"][2] + p
+            if child in have_trait:
+                probabilities[child]["trait"][True] = update_trait(2, True, p)
+            else:
+                probabilities[child]["trait"][False] = update_trait(2, False, p)
+
+    children_to_check = probabilities.keys()
+
+    for child in children_to_check:
+        if child not in (one_gene | two_genes | have_trait):
+            probabilities[child]["gene"][0] = PROBS["gene"][0] + p
+            if child in have_trait:
+                probabilities[child]["trait"][True] = update_trait(0, True, p)
+            else:
+                probabilities[child]["trait"][False] = update_trait(0, False, p)
 
 
 def normalize(probabilities):
