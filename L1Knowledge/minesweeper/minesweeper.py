@@ -2,7 +2,7 @@ import itertools
 import random
 
 
-class Minesweeper():
+class Minesweeper:
     """
     Minesweeper game representation
     """
@@ -84,7 +84,7 @@ class Minesweeper():
         return self.mines_found == self.mines
 
 
-class Sentence():
+class Sentence:
     """
     Logical statement about a Minesweeper game
     A sentence consists of a set of board cells,
@@ -107,7 +107,7 @@ class Sentence():
         """
 
         # If count of mines is equal to number of cells (and > 0), all cells are mines:
-        if len(self.cells) == self.count and self.count != 0:
+        if len(self.cells) == self.count and self.count > 0:
             print('Mine Identified! - ', self.cells)
             return self.cells
         else:
@@ -222,7 +222,7 @@ class MinesweeperAI():
 
                 # If cells are known to be mines, reduce count by 1 and ignore them:
                 if (i, j) in self.mines:
-                    count = count - 1
+                    count -= - 1
                     continue
 
                 # Otherwise add them to sentence if they are in the game board:
