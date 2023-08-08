@@ -99,7 +99,21 @@ class CrosswordCreator():
         (Remove any values that are inconsistent with a variable's unary
          constraints; in this case, the length of the word.)
         """
-        pass
+        domain_keys = list(self.domains.keys())
+
+        length_of_words = {domain_name: domain_name.length for domain_name in domain_keys}
+
+        filtered_domains = {}
+
+        for domain_name, length in length_of_words.items():
+            filtered_words = []
+            for word in self.domains[domain_name]:
+                if len(word) == length:
+                    filtered_words.append(word)
+            filtered_domains[domain_name] = filtered_words
+
+        self.domains = filtered_domains
+        print(self.domains)
 
     def revise(self, x, y):
         """
