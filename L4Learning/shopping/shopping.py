@@ -3,6 +3,7 @@ import sys
 
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from datetime import datetime
 
 TEST_SIZE = 0.4
 
@@ -29,6 +30,14 @@ def main():
     print(f"Incorrect: {(y_test != predictions).sum()}")
     print(f"True Positive Rate: {100 * sensitivity:.2f}%")
     print(f"True Negative Rate: {100 * specificity:.2f}%")
+
+
+def convert_month(month_str):
+    month_dict = {
+        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
+        'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12
+    }
+    return month_dict.get(month_str, 0)
 
 
 def load_data(filename):
@@ -59,7 +68,37 @@ def load_data(filename):
     labels should be the corresponding list of labels, where each label
     is 1 if Revenue is true, and 0 otherwise.
     """
-    raise NotImplementedError
+    with open(filename) as f:
+        reader = csv.reader(f)
+        next(reader)
+
+        evidence_tuple = []
+        label_tuple = []
+
+        for row in reader:
+            evidence = (
+                int(row[0]),
+                float(row[1]),
+                int(row[2]),
+                float(row[3]),
+                int(row[4]),
+                float(row[5]),
+                float(row[6]),
+                float(row[7]),
+                float(row[8]),
+                float(row[9]),
+                convert_month(row[10]),
+                int(row[11]),
+                int(row[12]),
+                int(row[13]),
+                int(row[14]),
+                1 if row[15] == "Returning_Visitor" else 0,
+                1 if row[16] == "TRUE" else 0
+            )
+            evidence_tuple.append(evidence)
+            label_tuple.append(1 if row[-1] == "TRUE" else 0)
+
+    return evidence_tuple, label_tuple
 
 
 def train_model(evidence, labels):
