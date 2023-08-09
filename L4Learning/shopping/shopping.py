@@ -23,6 +23,7 @@ def main():
     # Train model and make predictions
     model = train_model(X_train, y_train)
     predictions = model.predict(X_test)
+    evaluate(y_test, predictions)
     sensitivity, specificity = evaluate(y_test, predictions)
 
     # Print results
@@ -106,7 +107,8 @@ def train_model(evidence, labels):
     Given a list of evidence lists and a list of labels, return a
     fitted k-nearest neighbor model (k=1) trained on the data.
     """
-    raise NotImplementedError
+    model = KNeighborsClassifier(n_neighbors=1)
+    return model.fit(evidence, labels)
 
 
 def evaluate(labels, predictions):
@@ -124,7 +126,24 @@ def evaluate(labels, predictions):
     representing the "true negative rate": the proportion of
     actual negative labels that were accurately identified.
     """
-    raise NotImplementedError
+    total_sensitivity = 0
+    sensitivity = 0
+    total_specificity = 0
+    specificity = 0
+
+    for idx, evidence in enumerate(labels):
+        if evidence == 1:
+            total_sensitivity += 1
+            if evidence == predictions[idx]:
+                sensitivity += 1
+        else:
+            total_specificity += 1
+            if evidence == predictions[idx]:
+                specificity += 1
+
+    sensitivity /= total_sensitivity
+    specificity /= total_specificity
+    return sensitivity, specificity
 
 
 if __name__ == "__main__":
