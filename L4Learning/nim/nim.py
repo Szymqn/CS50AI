@@ -1,6 +1,7 @@
 import math
 import random
 import time
+import numpy as np
 
 
 class Nim():
@@ -137,21 +138,18 @@ class NimAI():
         Q-value in `self.q`. If there are no available actions in
         `state`, return 0.
         """
-        if state not in self.q:
-            return 0
-
-        available_actions = self.q[state].keys()  # ?
+        available_actions = Nim.available_actions(state)
 
         if not available_actions:
             return 0
 
-        max_future_reward = float("-inf")
-        for action in available_actions:
-            q_val = self.q[state].get(action, 0)  # ?
-            if q_val > max_future_reward:
-                max_future_reward = q_val
+        best_future = float("-inf")
 
-        return max_future_reward
+        for action in available_actions:
+            q_value = self.get_q_value(state, action)
+            best_future = max(best_future, q_value)
+
+        return best_future
 
     def choose_action(self, state, epsilon=True):
         """
@@ -168,19 +166,18 @@ class NimAI():
         If multiple actions have the same Q-value, any of those
         options is an acceptable return value.
         """
-        if epsilon:
-            if random.random() < self.epsilon:
-                chosen_action = random.choice(state)
-            else:
-                max_q_val = max(self.q)
-                best_actions = [action for action, q_val in enumerate(state) if q_val == max_q_val]
-                chosen_action = random.choice(best_actions)
-
-            return chosen_action
+        if epsilon and random.random() < self.epsilon:
+            return random.choice(list(Nim.available_actions(state)))
         else:
-            if self.q in state:
-                return 0
-            return max(state)
+            best_action = None
+            best_q_value = float("-inf")
+
+            for action in Nim.available_actions(state):
+                q_value = self.get_q_value(state, action)
+                if q_value > best_q_value:
+                    best_q_value = q_value
+                    best_action = action
+            return best_action
 
 
 def train(n):
