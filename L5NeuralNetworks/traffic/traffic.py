@@ -66,7 +66,8 @@ def load_data(data_dir):
             if image.endswith(".ppm"):
                 image_path = os.path.join(data_dir, str(i), image)
                 im = cv2.imread(str(image_path))
-                im.resize((IMG_WIDTH, IMG_HEIGHT, 3))
+                im = cv2.resize(im, (IMG_WIDTH, IMG_HEIGHT))
+
                 images.append(im)
                 labels.append(i)
 
