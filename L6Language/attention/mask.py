@@ -135,7 +135,7 @@ def generate_diagram(layer_number, head_number, tokens, attention_weights):
             draw.rectangle((x, y, x + GRID_SIZE, y + GRID_SIZE), fill=color)
 
     # Save image
-    img.save(f"Attention_Layer{layer_number}_Head{head_number}.png")
+    img.save(f"attentions/Attention_Layer{layer_number}_Head{head_number}.png")
 
 
 if __name__ == "__main__":
