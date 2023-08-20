@@ -1,5 +1,6 @@
 import sys
 import tensorflow as tf
+import numpy as np
 
 from PIL import Image, ImageDraw, ImageFont
 from transformers import AutoTokenizer, TFBertForMaskedLM
@@ -17,7 +18,7 @@ PIXELS_PER_WORD = 200
 
 
 def main():
-    text = input("Text: ")
+    text = "We turned down a narrow lane and passed through a small [MASK]."
 
     # Tokenize input
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
@@ -45,9 +46,13 @@ def get_mask_token_index(mask_token_id, inputs):
     Return the index of the token with the specified `mask_token_id`, or
     `None` if not present in the `inputs`.
     """
-    # TODO: Implement this function
-    raise NotImplementedError
+    input_ids_array = inputs['input_ids'].numpy()
 
+    if mask_token_id in input_ids_array:
+        id_array = np.where(input_ids_array == mask_token_id)[1]
+        return int(id_array[0])
+    else:
+        return None
 
 
 def get_color_for_attention_score(attention_score):
@@ -57,7 +62,6 @@ def get_color_for_attention_score(attention_score):
     """
     # TODO: Implement this function
     raise NotImplementedError
-
 
 
 def visualize_attentions(tokens, attentions):
