@@ -18,7 +18,7 @@ PIXELS_PER_WORD = 200
 
 
 def main():
-    text = "We turned down a narrow lane and passed through a small [MASK]."
+    text = "Then I picked up a [MASK] from the table."
 
     # Tokenize input
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
@@ -61,7 +61,8 @@ def get_color_for_attention_score(attention_score):
     given `attention_score`. Each value should be in the range [0, 255].
     """
     # TODO: Implement this function
-    raise NotImplementedError
+    score = round(attention_score.numpy() * 255)
+    return score, score, score
 
 
 def visualize_attentions(tokens, attentions):
@@ -75,12 +76,18 @@ def visualize_attentions(tokens, attentions):
     (starting count from 1).
     """
     # TODO: Update this function to produce diagrams for all layers and heads.
-    generate_diagram(
-        1,
-        1,
-        tokens,
-        attentions[0][0][0]
-    )
+    num_layers = len(attentions)
+    num_heads = len(attentions[0][0])
+
+    for layer_number in range(num_layers):
+        for head_number in range(num_heads):
+            attention_weights = attentions[layer_number][0][head_number]
+            generate_diagram(
+                layer_number + 1,
+                head_number + 1,
+                tokens,
+                attention_weights
+            )
 
 
 def generate_diagram(layer_number, head_number, tokens, attention_weights):
