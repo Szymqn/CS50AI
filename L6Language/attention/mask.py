@@ -60,7 +60,6 @@ def get_color_for_attention_score(attention_score):
     Return a tuple of three integers representing a shade of gray for the
     given `attention_score`. Each value should be in the range [0, 255].
     """
-    # TODO: Implement this function
     score = round(attention_score.numpy() * 255)
     return score, score, score
 
@@ -75,7 +74,6 @@ def visualize_attentions(tokens, attentions):
     include both the layer number (starting count from 1) and head number
     (starting count from 1).
     """
-    # TODO: Update this function to produce diagrams for all layers and heads.
     num_layers = len(attentions)
     num_heads = len(attentions[0][0])
 
